@@ -1,0 +1,67 @@
+import pytest
+
+
+class Calculator:
+    def add(self, a, b):
+        return a + b
+
+    def subtract(self, a, b):
+        return a - b
+
+    def multiply(self, a, b):
+        return a * b
+
+    def divide(self, a, b):
+        if b == 0:
+            raise ValueError("Cannot divide by zero")
+        return a / b
+
+@pytest.fixture(scope="session")
+def calculator():
+    calc = Calculator()
+    return calc
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (2, 3, 5),
+    (-1, 1, 0),
+    (0, 0, 0),
+    (10, -3, 7)
+])
+def test_add(calculator, a, b, expected):
+    assert calculator.add(a, b) == expected
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (5, 2, 3),
+    (10, 10, 0),
+    (3, -5, 8),
+    (0, 0, 0)
+])
+def test_subtract(calculator, a, b, expected):
+    assert calculator.subtract(a, b) == expected
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (2, 3, 6),
+    (-1, 1, -1),
+    (0, 5, 0),
+    (8, 0, 0)
+])
+def test_multiply(calculator, a, b, expected):
+    assert calculator.multiply(a, b) == expected
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (6, 3, 2),
+    (10, 2, 5),
+    (-8, 4, -2),
+    (0, 5, 0)
+])
+def test_divide(calculator, a, b, expected):
+    assert calculator.divide(a, b) == expected
+
+
+def test_divide_by_zero(calculator):
+    with pytest.raises(ValueError):
+        calculator.divide(10, 0)
